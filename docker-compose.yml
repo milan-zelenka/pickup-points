@@ -1,0 +1,62 @@
+services:
+  php:
+    container_name: pickup-points-php
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    userns_mode: "host"
+    user: "1000:1000"
+    networks:
+      - net-pickup-points
+    volumes:
+      - .:/app
+      - /etc/passwd:/etc/passwd:ro
+      - /etc/group:/etc/group:ro
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      APP_ENV: ${APP_ENV}
+      DB_HOST: ${DB_HOST}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+    working_dir: /app
+    tty: true
+
+  mysql:
+    container_name: pickup-points-db
+    image: mysql:8.4
+    networks:
+      - net-pickup-points
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASS}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  adminer:
+    container_name: pickup-points-adminer
+    image: adminer:4.8.1
+    networks:
+      - net-pickup-points
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+
+networks:
+  net-pickup-points:
+    driver: bridge
+
+volumes:
+  mysql_data:

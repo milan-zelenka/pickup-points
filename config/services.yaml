@@ -1,0 +1,37 @@
+# yaml-language-server: $schema=../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    _instanceof:
+        App\Import\Feed\PickupPointFeedReader:
+            tags: ['app.pickup_point_feed_reader']
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/**/*Test.php'
+            - '../src/PickupPoint/PickupPoint.php'
+            - '../src/PickupPoint/PickupPointType.php'
+            - '../src/PickupPoint/PickupPointStatus.php'
+            - '../src/PickupPoint/Carrier.php'
+            - '../src/PickupPoint/Country.php'
+            - '../src/PickupPoint/OpeningHours/'
+            - '../src/Import/ImportProgressReporter/ConsoleProgressReporter.php'
+
+    App\Import\Feed\PickupPointFeedRegistry:
+        arguments:
+            $feeds: !tagged_iterator app.pickup_point_feed_reader
+
+    App\Database\PdoConnectionFactory:
+        arguments:
+            $dsn: 'mysql:host=%env(DB_HOST)%;dbname=%env(DB_NAME)%;charset=utf8mb4'
+            $username: '%env(DB_USER)%'
+            $password: '%env(DB_PASS)%'
+
+    PDO:
+        class: PDO
+        autoconfigure: false
+        factory: ['@App\Database\PdoConnectionFactory', 'create']

@@ -1,0 +1,14 @@
+/config/reference.php
+/var/
+/vendor/
+
+.env
+.phpunit.result.cache
+.php-cs-fixer.cache
+.idea/
+.vscode/
+
+/phpunit.xml
+/.phpunit.cache/
+/.php-cs-fixer.php
+/.php-cs-fixer.cache

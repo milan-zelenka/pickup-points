@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed>
+    <point id="1"><name>Alpha</name></point>
+    <point id="2"><name>Beta</name></point>
+    <point id="3"><name>Gamma</name></point>
+    <meta>ignored</meta>
+</feed>

@@ -1,0 +1,9 @@
+parameters:
+    level: max
+    paths:
+        - src
+        - bin
+        - config
+        - db
+    excludePaths:
+        - src/Kernel.php

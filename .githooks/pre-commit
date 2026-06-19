@@ -1,0 +1,13 @@
+#!/bin/sh
+set -e
+
+echo "==> php-cs-fixer (dry-run)"
+docker compose exec -T php composer cs
+
+echo "==> PHPStan"
+docker compose exec -T php composer phpstan
+
+echo "==> PHPUnit"
+docker compose exec -T php composer phpunit
+
+echo "Pre-commit checks passed."
